@@ -38,7 +38,6 @@ def clusteralg(c,bx, by,steps):
             trial.append(np.random.randint(0,N[i]))
         trial=tuple(trial)
         visitati[trial]=1
-        C=[trial]
         frontold=[trial]
         cambio[trial]=-1
         while(len(frontold)!=0):
@@ -52,13 +51,11 @@ def clusteralg(c,bx, by,steps):
                         if (np.random.rand()<py):
                             frontnew.append(nn)
                             visitati[nn]=1
-                            C.append(nn)
                             cambio[nn]=-1
                     if (c[nn]==spin and visitati[nn]==0 and nn[1]==pos[1]):
                         if (np.random.rand()<px):
                             frontnew.append(nn)
-                            visitati[nn]=1
-                            C.append(nn)
+                            visitati[nn]
                             cambio[nn]=-1                    
                             
             frontold=frontnew
@@ -80,3 +77,28 @@ def bindercum(m,c):
 def suscet(m,c):
     d=np.prod(c.shape)
     return d*(np.mean(m**2)-(np.mean(abs(m))**2))
+
+def intersection(array1,array2,base):
+    for i in np.array(range(len(array1)))+1:
+        if (array1[i]>array2[i] and array1[i-1]<array2[i-1]):
+            x=np.linspace(base[i-1],base[i])
+            y1=np.linspace(array1[i-1],array1[i],100)
+            y2=np.linspace(array2[i-1],array2[i],100)
+            inter=list(abs(y1-y2)).index(abs(y1-y2).min())
+            return base[inter]
+        
+        if (array2[i]>array1[i] and array2[i-1]<array1[i-1]):
+            x=np.linspace(base[i-1],base[i])
+            y1=np.linspace(array1[i-1],array1[i],100)
+            y2=np.linspace(array2[i-1],array2[i],100)
+            inter=list(abs(y1-y2)).index(abs(y1-y2).min())
+            return base[inter]
+        
+        
+    
+            
+        
+        
+        
+    
+
