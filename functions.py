@@ -56,13 +56,12 @@ def clusteralg(c,bx, by,steps):
                         if (np.random.rand()<px):
                             frontnew.append(nn)
                             visitati[nn]
-                            cambio[nn]=-1                    
-                            
+                            cambio[nn]=-1                                  
             frontold=frontnew
         c=c*cambio
         mag[t]=magnetization(c)
 
-    return mag
+    return mag, c
 
 def bootstrap(m, M, func,c): #m sample montecarlo, M numero copie fake, func funzione da chiamare
     estim_prov=np.zeros(M)
