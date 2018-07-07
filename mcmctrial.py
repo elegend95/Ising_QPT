@@ -7,53 +7,85 @@ Created on Fri Jun 29 11:05:03 2018
 
 import numpy as np
 import matplotlib.pyplot as plt
+import functions as fx
 
-L=20
-N=20
-X,Y=np.meshgrid(range(N),range(L))
-#beta=0.2
-a=beta/N
-# =============================================================================
-# kappa=a
-# gamma=1.2
-# gammah=-0.5*np.log(np.tanh(a*gamma))
-# 
-# =============================================================================
+
 kappa=1
-gammah=1
+gamma=1
+
+#conf=2*np.random.randint(2, size=(L,N))-1
+conf=np.ones([L,N])
+T=3000
+
+#cold start, high temp phase
 
 # =============================================================================
-# def updatemcmc(c, k, g, sp, ti):
-#     x=np.random.randint(0,sp)
-#     y=np.random.randint(0,ti)
-#     r=np.exp(-2*beta*c[x,y]*(k*(c[(x-1)%L,y]+c[(x+1)%L,y])+g*(c[x,(y-1)%N]+c[x,(y+1)%N]))) #acceptance
-#     #r=np.exp(-2*beta*conf[x,y]*(conf[(x-1)%L,y]+conf[(x+1)%L,y]+conf[x,(y-1)%L]+conf[x,(y+1)%L])) 
+# beta=0.2
+# for size in [10, 50, 80]:
+#     conf=np.ones([size,size])
+#     mag, confee=fx.metropolis(conf,beta,T)
+#     plt.figure(1)
+#     plt.grid(True)
+#     plt.title('Relaxation (cold start, beta=0.2, 2D Ising)')
+#     plt.xlabel('Monte Carlo time')
+#     plt.ylabel('Magnetization')
+#     plt.plot(range(T),mag,linestyle='',marker='o',markersize=1, label=size)
+# plt.legend()
+# plt.savefig('relaxation2D.png')
 # 
-#     if r>np.random.rand():
-#         c[x,y]*=-1
-#     return c
+# beta=1
 # =============================================================================
 
-conf=2*np.random.randint(2, size=(L,N))-1
-#conf=np.ones([L,N])
-T=100000
+#ergodicity breaking test
 
-binder=np.zeros(12)
-beta=np.linspace(0.2,0.6,12)
-for j in range(len(beta)):
-    conf=2*np.random.randint(2, size=(L,N))-1
-    magn=np.zeros(T)
-    for i in range(T):
-        x=np.random.randint(0,L)
-        y=np.random.randint(0,N)
-        r=np.exp(-2*beta[j]*conf[x,y]*(kappa*(conf[(x-1)%L,y]+conf[(x+1)%L,y])+gammah*(conf[x,(y-1)%N]+conf[x,(y+1)%N]))) #acceptance
-    
-        if r>np.random.rand():
-            conf[x,y]*=-1
-        magn[i]=(float(sum(sum(conf[:,:])))/(L*N))
-    cut=20000
-    binder[j]=(sum(magn[cut:]**4)/((sum(magn[cut:]**2))**2))*(T-cut)
+# =============================================================================
+# beta=0.5
+# for i in [0,1,2]:
+#     for size in [10]:
+#         conf=2*np.random.randint(2, size=(size,size))-1    
+#         mag, confee=fx.metropolis(conf,beta,T)
+#         plt.figure(1)
+#         plt.grid(True)
+#         plt.title('Ergodicity breaking (hot start, beta=0.5, 2D Ising, size=10)')
+#         plt.xlabel('Monte Carlo time')
+#         plt.ylabel('Magnetization')
+#         plt.scatter(range(T),mag,marker='o',s=1)
+# 
+# plt.legend()
+# plt.savefig('nonergodic2D.png')
+# 
+# =============================================================================
 
+#cluster relaxation test
 
-plt.figure(1)
-plt.plot(beta,binder)
+beta=0.2
+for size in [10,20,30,40,50]:
+    conf=np.ones([size,size])
+    mag, confee=fx.clusteralg(conf,beta, beta,T)
+    plt.figure(1)
+    plt.grid(True)
+    plt.title('Cluster relaxation (cold start, beta=0.2, 2D Ising)')
+    plt.xlabel('Monte Carlo time')
+    plt.ylabel('Magnetization')
+    plt.plot(range(T)[5:],mag[5:],linestyle='',marker='o',markersize=1, label=size)
+plt.legend()
+#plt.savefig('relaxation2Dcluster.png')
+T=200
+
+# =============================================================================
+# beta=1
+# for i in [0]:
+#     for size in [50]:
+#         conf=2*np.random.randint(2, size=(size,size))-1    
+#         mag, confee=fx.metropolis(conf,beta,T)
+#         plt.figure(1)
+#         plt.grid(True)
+#         plt.title('Ergodicity (hot start, beta=1, 2D Ising, size=50)')
+#         plt.xlabel('Monte Carlo time')
+#         plt.ylabel('Magnetization')
+#         plt.scatter(range(T),mag,marker='o',s=3)
+# 
+# plt.legend()
+# #plt.savefig('ergodic2Dcluster.png')
+# 
+# =============================================================================

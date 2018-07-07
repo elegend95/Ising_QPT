@@ -35,7 +35,7 @@ plt.title("Magnetization (34 sites)")
 plt.xlabel("MC step")
 plt.ylabel("Magnetization")
 
-for L in [34]:
+for L in [10, 20, 30]:
     N=L
     beta=np.linspace(0.1,0.8,9)
     binder=np.zeros(9)
@@ -53,9 +53,9 @@ for L in [34]:
             magn[i]=(float(sum(sum(conf[:,:])))/(L*N))
         plt.plot(range(T),magn, label=beta[j])
         cut=20000
-        binder[j]=(sum(magn[cut:]**4)/((sum(magn[cut:]**2))**2))*(T-cut)
+        #binder[j]=(sum(magn[cut:]**4)/((sum(magn[cut:]**2))**2))*(T-cut)
 
 #    plt.plot(beta,binder)
 
 #plt.legend(loc='upper right')
-plt.savefig("magnet34.pdf")
+plt.savefig("magnetmetropolis.pdf")

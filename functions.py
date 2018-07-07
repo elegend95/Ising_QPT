@@ -14,7 +14,7 @@ def nearneigh(ind, rang, num): #mi individua i near.neigh. a uno spin dato
             if(j==0): continue
             NN = list(ind)
             NN[i] +=j
-            if(NN[i] >= rang[i]):
+            if(NN[i] >= rang[i]): 
                 NN[i] = NN[i] - rang[i]
             if(NN[i] < 0):
                 NN[i] = rang[i]+NN[i]
@@ -24,6 +24,22 @@ def nearneigh(ind, rang, num): #mi individua i near.neigh. a uno spin dato
 def magnetization(c): #magn singolo passo MC (singola configurazione)
     d=np.prod(c.shape)
     return (float(np.sum(c)))/d
+
+def metropolis(conf,beta,steps):
+    mag=np.zeros(steps)
+    N=conf.shape
+    for t in range(steps):
+        print t
+        trial=[]
+        for i in range(len(N)):
+            trial.append(np.random.randint(0,N[i]))
+        trial=tuple(trial)
+        a=nearneigh(trial,N,1)
+        r=np.exp(-2*beta*conf[trial]*sum(conf[a[i]] for i in range(len(a))))
+        if r>np.random.rand():
+            conf[trial]*=-1
+        mag[t]=magnetization(conf)
+    return mag, conf
 
 def clusteralg(c,bx, by,steps):
     mag=np.zeros(steps)
@@ -47,16 +63,19 @@ def clusteralg(c,bx, by,steps):
                 neiglist=nearneigh(pos,N,1)
                 for neigsite in neiglist:
                     nn=tuple(neigsite)
-                    if (c[nn]==spin and visitati[nn]==0 and nn[0]==pos[0]):
+                    if (c[nn]==spin and visitati[nn]==0):
+                        # and nn[0]==pos[0]
                         if (np.random.rand()<py):
                             frontnew.append(nn)
                             visitati[nn]=1
                             cambio[nn]=-1
-                    if (c[nn]==spin and visitati[nn]==0 and nn[1]==pos[1]):
-                        if (np.random.rand()<px):
-                            frontnew.append(nn)
-                            visitati[nn]
-                            cambio[nn]=-1                                  
+# =============================================================================
+#                     if (c[nn]==spin and visitati[nn]==0 and nn[1]==pos[1]):
+#                         if (np.random.rand()<px):
+#                             frontnew.append(nn)
+#                             visitati[nn]=1
+#                             cambio[nn]=-1                                  
+# =============================================================================
             frontold=frontnew
         c=c*cambio
         mag[t]=magnetization(c)
@@ -93,7 +112,11 @@ def intersection(array1,array2,base):
             inter=list(abs(y1-y2)).index(abs(y1-y2).min())
             return base[inter]
         
-        
+def linearfun(x,a,b):
+    return a*x+b        
+
+def potfunc(x,nu,bc):
+    return x**(nu)+bc
     
             
         
